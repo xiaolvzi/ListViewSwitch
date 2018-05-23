@@ -32,9 +32,24 @@ namespace ListViewSwitchTest
             }
             adapter = new MyAdapter(this, list);
             mListView.Adapter = adapter;
-
+            mListView.ItemClick += MListView_ItemClick;
         }
-        
+
+        private void MListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
+        {
+            var ll = e.View as LinearLayout;
+            var sw = ll.GetChildAt(1) as Switch;
+            if (sw.Checked)
+            {
+                sw.Checked = false;
+                adapter.changeState((int)sw.Tag,false);
+            }
+            else
+            {
+                sw.Checked = true;
+                adapter.changeState((int)sw.Tag, true);
+            }
+        }
 
         class MyAdapter : BaseAdapter
         {
@@ -84,11 +99,18 @@ namespace ListViewSwitchTest
                 holder.ms.Tag = position;
                 // init
                 holder.txtDescription.Text = mitems[position].position;
+                holder.ms.Focusable = false;
                 holder.ms.Checked = mitems[position].isCheck;
                 holder.ms.CheckedChange+= Ms_CheckedChange;
                 Log.Error("position : check", (int)holder.ms.Tag +" : "+ mitems[position].isCheck);
                 return convertView;
 
+            }
+
+            internal void changeState(int position, bool v)
+            {
+                mitems[position].isCheck = v;
+                this.NotifyDataSetChanged();
             }
 
             private void Ms_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
