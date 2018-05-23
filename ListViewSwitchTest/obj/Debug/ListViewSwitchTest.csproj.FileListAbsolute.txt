@@ -66,3 +66,5 @@ C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\obj\Debug\android\assets\S
 C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\obj\Debug\android\assets\System.ServiceModel.Internals.pdb
 C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\obj\Debug\android\assets\System.Xml.pdb
 C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\obj\Debug\ListViewSwitchTest.csprojAssemblyReference.cache
+C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\bin\Debug\ListViewSwitchTest.dll
+C:\VS_WorkSpace\ListViewSwitchTest\ListViewSwitchTest\obj\Debug\linksrc\ListViewSwitchTest.dll.mdb

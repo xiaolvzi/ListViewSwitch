@@ -24,40 +24,27 @@ namespace ListViewSwitchTest
             // Set our view from the "main" layout resource
             SetContentView(Resource.Layout.activity_main);
             mListView = FindViewById<ListView>(Resource.Id.listview);
-            List<string> list = new List<string>();
+            List<MyData> list = new List<MyData>();
 
             for (int i = 0; i < 30; i++)
             {
-                list.Add(i + "");
+                list.Add(new MyData(i+"",false));
             }
             adapter = new MyAdapter(this, list);
             mListView.Adapter = adapter;
-            // we need to handle the layout Reuse question
-            mListView.ItemClick += MListView_ItemClick; 
 
         }
-
-        private void MListView_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
-        {
-            var ll = e.View as LinearLayout;
-            var sw = ll.GetChildAt(1) as Switch;
-            sw.Checked = true;
-            adapter.changeState(e.Position);
-        }
+        
 
         class MyAdapter : BaseAdapter
         {
             Context mContext;
-            List<string> mitems;
-            List<int> mList;// this list is for store Switch's state, 0-off, 1-on
-            public MyAdapter(Context context, List<string> list)
+            List<MyData> mitems;
+            public MyAdapter(Context context, List<MyData> list)
             {
                 this.mContext = context;
                 this.mitems = list;
-                mList = new List<int>();
-                for (int i = 0; i < mitems.Count; i++) {
-                    mList.Add(0);
-                }
+               
             }
             public override int Count
             {
@@ -87,7 +74,6 @@ namespace ListViewSwitchTest
                     holder.ll = convertView.FindViewById<LinearLayout>(Resource.Id.ll);
                     holder.txtDescription= convertView.FindViewById<TextView>(Resource.Id.txtDescription);
                     holder.ms = convertView.FindViewById<Switch>(Resource.Id.sw);
-                    
                     convertView.Tag = holder;
                 }
                 else
@@ -95,35 +81,34 @@ namespace ListViewSwitchTest
                     holder = convertView.Tag as DataViewHolder;
 
                 }
-                
+                holder.ms.Tag = position;
                 // init
-                holder.txtDescription.Text = position + "";
-                holder.ms.Focusable = false;
-
-                if (mList[position] == 0)
-                {
-                    holder.ms.Checked = false;
-                }
-                else {
-                    holder.ms.Checked = true;
-                }
-                
+                holder.txtDescription.Text = mitems[position].position;
+                holder.ms.Checked = mitems[position].isCheck;
+                holder.ms.CheckedChange+= Ms_CheckedChange;
+                Log.Error("position : check", (int)holder.ms.Tag +" : "+ mitems[position].isCheck);
                 return convertView;
 
             }
 
-            internal void changeState(int position)
+            private void Ms_CheckedChange(object sender, CompoundButton.CheckedChangeEventArgs e)
             {
-                if (mList[position] == 1)
+                var sm = sender as Switch;
+                Log.Error("Ms_CheckedChange", (int)sm.Tag+"");
+                if (e.IsChecked&&!mitems[(int)sm.Tag].isCheck)
                 {
-
-                    mList[position] = 0;
+                    mitems[(int)sm.Tag].isCheck = true;
+                    this.NotifyDataSetChanged();
                 }
-                else {
-                    mList[position] = 1;
+                else if(!e.IsChecked&& mitems[(int)sm.Tag].isCheck)
+                {
+                    mitems[(int)sm.Tag].isCheck = false;
+                    this.NotifyDataSetChanged();
                 }
-                this.NotifyDataSetChanged();
+               
             }
+
+      
         }
 
         public class DataViewHolder : Java.Lang.Object
@@ -133,6 +118,16 @@ namespace ListViewSwitchTest
             public Switch ms{ get; set; }
 
         }
+        public class MyData:Java.Lang.Object {
+            public MyData(string p,bool b) {
+                this.position = p;
+                this.isCheck = b;
+            }
+            public string position { get; set; }
+            public bool isCheck { get; set; }
+        }
+
+
     }
 }
 
